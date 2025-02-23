@@ -9,6 +9,10 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\Admin\LoginController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\NewsController as AdminNewsController;
+use App\Http\Controllers\Admin\EmployeeController as AdminEmployeeController;
+use App\Http\Controllers\Admin\DocumentController as AdminDocumentController;
 use App\Http\Controllers\EmployeeController;
 
 /*
@@ -56,29 +60,25 @@ Route::get('/uslovi-koriscenja', [LegalController::class, 'terms'])->name('legal
 
 // Admin rute
 Route::prefix('admin')->name('admin.')->group(function () {
-    // Auth rute
-    Route::middleware('guest:admin')->group(function () {
-        Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-        Route::post('/login', [LoginController::class, 'login']);
-    });
-    
-    Route::post('/logout', [LoginController::class, 'logout'])
-        ->name('logout')
-        ->middleware('auth:admin');
+    // Login rute
+    Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [LoginController::class, 'login']);
+    Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
-    // Protected admin rute
-    Route::middleware('auth:admin')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('dashboard');
+    // Admin panel rute (zaštićene sa auth:admin middleware-om)
+    Route::middleware(['auth:admin'])->group(function () {
+        // Dashboard
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-        // Rute za upravljanje dokumentima
-        Route::resource('documents', \App\Http\Controllers\Admin\DocumentController::class);
+        // Vesti
+        Route::resource('news', AdminNewsController::class);
+        Route::post('news/{news}/toggle-featured', [AdminNewsController::class, 'toggleFeatured'])->name('news.toggle-featured');
+
+        // Zaposleni
+        Route::resource('employees', AdminEmployeeController::class);
+        Route::post('employees/{employee}/toggle-active', [AdminEmployeeController::class, 'toggleActive'])->name('employees.toggle-active');
         
-        // Rute za upravljanje vestima
-        Route::resource('news', \App\Http\Controllers\Admin\NewsController::class);
-        
-        // Rute za upravljanje zaposlenima
-        Route::resource('employees', \App\Http\Controllers\Admin\EmployeeController::class);
+        // Dokumenti
+        Route::resource('documents', AdminDocumentController::class);
     });
 });
