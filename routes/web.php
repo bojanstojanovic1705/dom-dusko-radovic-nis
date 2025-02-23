@@ -8,6 +8,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\LegalController;
+use App\Http\Controllers\Admin\Auth\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,3 +54,21 @@ Route::post('/newsletter', [NewsletterController::class, 'subscribe'])->name('ne
 // Legal rute
 Route::get('/pravila-privatnosti', [LegalController::class, 'privacy'])->name('legal.privacy');
 Route::get('/uslovi-koriscenja', [LegalController::class, 'terms'])->name('legal.terms');
+
+// Admin rute
+Route::prefix('admin')->name('admin.')->group(function () {
+    // Auth rute
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+    // Protected admin rute
+    Route::middleware('auth:admin')->group(function () {
+        Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('dashboard');
+
+        // Rute za upravljanje dokumentima
+        Route::resource('documents', \App\Http\Controllers\Admin\DocumentController::class);
+    });
+});
