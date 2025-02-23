@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 
-class AboutController extends Controller
+class EmployeeController extends Controller
 {
     public function index()
     {
@@ -14,6 +14,6 @@ class AboutController extends Controller
             ->orderBy('name')
             ->get();
             
-        return view('about.index', compact('employees'));
+        return view('employees.index', compact('employees'));
     }
 }

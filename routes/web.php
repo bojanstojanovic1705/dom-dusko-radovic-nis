@@ -9,6 +9,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\Admin\LoginController;
+use App\Http\Controllers\EmployeeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,12 +25,8 @@ use App\Http\Controllers\Admin\LoginController;
 // Preusmeravamo osnovnu rutu na našu home stranicu
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// O nama ruta
-Route::get('/o-nama', function () {
-    return view('about.index');
-})->name('about.index');
-
 // O nama rute
+Route::get('/o-nama', [AboutController::class, 'index'])->name('about.index');
 Route::get('/o-nama/ko-smo-mi', [AboutController::class, 'who'])->name('about.who');
 Route::get('/o-nama/zaposleni', [AboutController::class, 'employees'])->name('about.employees');
 Route::get('/o-nama/istorijat', [AboutController::class, 'history'])->name('about.history');
@@ -41,9 +38,10 @@ Route::get('/dokumenta/javne-nabavke', [DocumentController::class, 'procurement'
 
 // Vesti rute
 Route::get('/vesti', [NewsController::class, 'index'])->name('news.index');
-Route::get('/vesti/{news}', [NewsController::class, 'show'])->name('news.show');
-Route::get('/vesti/{slug}', [NewsController::class, 'show'])->name('news.show');
 Route::get('/vest/{slug}', [NewsController::class, 'show'])->name('news.show');
+
+// Zaposleni ruta
+Route::get('/zaposleni', [EmployeeController::class, 'index'])->name('employees.index');
 
 // Kontakt ruta
 Route::get('/kontakt', [ContactController::class, 'index'])->name('contact');
@@ -79,5 +77,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         
         // Rute za upravljanje vestima
         Route::resource('news', \App\Http\Controllers\Admin\NewsController::class);
+        
+        // Rute za upravljanje zaposlenima
+        Route::resource('employees', \App\Http\Controllers\Admin\EmployeeController::class);
     });
 });

@@ -17,68 +17,38 @@
     <div class="container">
         <h2 class="section-title">Naš tim</h2>
         <div class="team-grid">
-            <!-- Kartica 1 -->
+            @foreach($employees as $employee)
             <div class="team-card">
                 <div class="team-card-image">
-                    <img src="{{ asset('images/team/member1.jpg') }}" alt="Marko Marković">
+                    @if($employee->image)
+                        <img src="{{ asset('storage/' . $employee->image) }}" alt="{{ $employee->name }}">
+                    @else
+                        <img src="{{ asset('images/team/placeholder.jpg') }}" alt="{{ $employee->name }}">
+                    @endif
                     <div class="team-card-overlay">
                         <div class="contact-info">
-                            <a href="mailto:marko@ddradovic.rs" class="contact-link" data-tooltip="Pošalji email">
+                            @if($employee->email)
+                            <a href="mailto:{{ $employee->email }}" class="contact-link" data-tooltip="Pošalji email">
                                 <i class="fa fa-envelope"></i>
                             </a>
-                            <a href="tel:+381641234567" class="contact-link" data-tooltip="Pozovi">
+                            @endif
+                            @if($employee->phone)
+                            <a href="tel:{{ $employee->phone }}" class="contact-link" data-tooltip="Pozovi">
                                 <i class="fa fa-phone"></i>
                             </a>
+                            @endif
                         </div>
                     </div>
                 </div>
                 <div class="team-card-content">
-                    <h3>Marko Marković</h3>
-                    <p class="position">Direktor</p>
+                    <h3>{{ $employee->name }}</h3>
+                    <p class="position">{{ $employee->position }}</p>
+                    @if($employee->bio)
+                        <div class="bio">{!! $employee->bio !!}</div>
+                    @endif
                 </div>
             </div>
-
-            <!-- Kartica 2 -->
-            <div class="team-card">
-                <div class="team-card-image">
-                    <img src="{{ asset('images/team/member2.jpg') }}" alt="Ana Anić">
-                    <div class="team-card-overlay">
-                        <div class="contact-info">
-                            <a href="mailto:ana@ddradovic.rs" class="contact-link" data-tooltip="Pošalji email">
-                                <i class="fa fa-envelope"></i>
-                            </a>
-                            <a href="tel:+381641234568" class="contact-link" data-tooltip="Pozovi">
-                                <i class="fa fa-phone"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="team-card-content">
-                    <h3>Ana Anić</h3>
-                    <p class="position">Psiholog</p>
-                </div>
-            </div>
-
-            <!-- Kartica 3 -->
-            <div class="team-card">
-                <div class="team-card-image">
-                    <img src="{{ asset('images/team/member3.jpg') }}" alt="Petar Petrović">
-                    <div class="team-card-overlay">
-                        <div class="contact-info">
-                            <a href="mailto:petar@ddradovic.rs" class="contact-link" data-tooltip="Pošalji email">
-                                <i class="fa fa-envelope"></i>
-                            </a>
-                            <a href="tel:+381641234569" class="contact-link" data-tooltip="Pozovi">
-                                <i class="fa fa-phone"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="team-card-content">
-                    <h3>Petar Petrović</h3>
-                    <p class="position">Socijalni radnik</p>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
 </section>
@@ -116,6 +86,166 @@
     </div>
 </section>
 @endsection
+
+@push('styles')
+<style>
+.team-section {
+    padding: 4rem 0;
+    background-color: #f8f9fa;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (max-width: 1400px) {
+    .team-grid {
+        grid-template-columns: repeat(3, minmax(250px, 1fr));
+        max-width: 1200px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .team-grid {
+        grid-template-columns: repeat(2, minmax(250px, 1fr));
+        max-width: 800px;
+    }
+}
+
+@media (max-width: 768px) {
+    .team-grid {
+        grid-template-columns: minmax(250px, 1fr);
+        max-width: 400px;
+    }
+}
+
+.team-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.team-card:hover {
+    transform: translateY(-5px);
+}
+
+.team-card-image {
+    position: relative;
+    padding-top: 100%; /* 1:1 Aspect Ratio */
+    overflow: hidden;
+}
+
+.team-card-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.team-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.team-card:hover .team-card-overlay {
+    opacity: 1;
+}
+
+.contact-info {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 0 1rem;
+}
+
+.contact-link {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.contact-link:hover {
+    background: #007bff;
+    color: white;
+    transform: translateY(-3px);
+}
+
+.contact-link[data-tooltip]:before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.5rem;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    font-size: 0.875rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.contact-link:hover[data-tooltip]:before {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-5px);
+}
+
+.team-card-content {
+    padding: 1.5rem;
+}
+
+.team-card-content h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.team-card-content .position {
+    color: #007bff;
+    font-weight: 500;
+    margin: 0.5rem 0;
+}
+
+.team-card-content .bio {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-top: 1rem;
+}
+</style>
+@endpush
 
 @push('scripts')
 <script>

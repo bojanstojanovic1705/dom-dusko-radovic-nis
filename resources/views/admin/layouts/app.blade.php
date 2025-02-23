@@ -72,6 +72,9 @@
             <a href="{{ route('admin.news.index') }}" class="nav-link {{ request()->routeIs('admin.news.*') ? 'active' : '' }}">
                 <i class="fas fa-newspaper"></i> Vesti
             </a>
+            <a href="{{ route('admin.employees.index') }}" class="nav-link {{ request()->routeIs('admin.employees.*') ? 'active' : '' }}">
+                <i class="fas fa-users"></i> Zaposleni
+            </a>
         </nav>
     </aside>
 
