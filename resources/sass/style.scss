@@ -1,0 +1,141 @@
+@import 'variables';
+
+// Reset & Base styles
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: $font-family-base;
+    line-height: 1.6;
+    color: $text-color;
+}
+
+// Navigation
+.navbar {
+    background-color: $primary-color;
+    height: $nav-height;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 0 $spacing-xl;
+
+    &__container {
+        max-width: $large-desktop;
+        margin: 0 auto;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    &__logo {
+        color: $light-text;
+        text-decoration: none;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    &__menu {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        li {
+            position: relative;
+            
+            &:hover > .dropdown {
+                display: block;
+            }
+        }
+
+        a {
+            color: $light-text;
+            text-decoration: none;
+            padding: $spacing-md;
+            display: block;
+            transition: color 0.3s ease;
+
+            &:hover {
+                color: $accent-color;
+            }
+        }
+    }
+
+    .dropdown {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: $primary-color;
+        min-width: $dropdown-width;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+
+        a {
+            padding: $spacing-md;
+            
+            &:hover {
+                background-color: $secondary-color;
+            }
+        }
+    }
+}
+
+// Main Content
+.main-content {
+    margin-top: $nav-height;
+    padding: $spacing-xl;
+}
+
+// Hero Section
+.hero {
+    background-color: $light-bg;
+    padding: $spacing-xl * 2;
+    text-align: center;
+    
+    h1 {
+        font-family: $font-family-heading;
+        font-size: 2.5rem;
+        margin-bottom: $spacing-lg;
+    }
+}
+
+// Cards
+.card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+}
+
+// Buttons
+.btn {
+    display: inline-block;
+    padding: $spacing-sm $spacing-lg;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    
+    &--primary {
+        background-color: $primary-color;
+        color: $light-text;
+        
+        &:hover {
+            background-color: darken($primary-color, 10%);
+        }
+    }
+}
+
+// Footer
+.footer {
+    background-color: $primary-color;
+    color: $light-text;
+    padding: $spacing-xl;
+    margin-top: $spacing-xl * 2;
+}
