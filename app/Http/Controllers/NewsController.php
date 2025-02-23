@@ -9,21 +9,20 @@ class NewsController extends Controller
 {
     public function index()
     {
-        $news = News::published()
-            ->with('images')
-            ->latest('published_at')
+        $news = News::where('is_published', true)
+            ->orderByDesc('published_at')
             ->paginate(9);
-
+            
         return view('news.index', compact('news'));
     }
 
     public function show($slug)
     {
         $news = News::where('slug', $slug)
-            ->published()
+            ->where('is_published', true)
             ->with('images')
             ->firstOrFail();
-
+            
         return view('news.show', compact('news'));
     }
 }

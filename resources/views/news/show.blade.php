@@ -13,28 +13,33 @@
                 </time>
             </header>
 
-            <div class="news-article__main-image">
-                <img src="{{ asset($news->main_image) }}" alt="{{ $news->title }}">
-            </div>
+            @if($news->main_image)
+                <div class="news-article__main-image">
+                    <img src="{{ asset('storage/' . $news->main_image) }}" 
+                         alt="{{ $news->title }}"
+                         class="img-fluid">
+                </div>
+            @endif
 
             <div class="news-article__content">
-                {!! nl2br(e($news->content)) !!}
+                {!! $news->content !!}
             </div>
 
-            @if($news->images->count() > 0)
-            <div class="news-article__gallery">
+            @if($news->images->count() > 1)
+            <div class="news-article__gallery mt-4">
                 <h3>Galerija slika</h3>
-                <div class="swiper gallery-slider">
+                <div class="gallery-slider swiper">
                     <div class="swiper-wrapper">
                         @foreach($news->images as $image)
-                        <div class="swiper-slide">
-                            <figure class="gallery-item">
-                                <img src="{{ asset($image->image_path) }}" alt="{{ $image->caption }}">
-                                @if($image->caption)
-                                <figcaption>{{ $image->caption }}</figcaption>
-                                @endif
-                            </figure>
-                        </div>
+                            @if($image->image_path !== $news->main_image)
+                                <div class="swiper-slide">
+                                    <figure class="gallery-item">
+                                        <img src="{{ asset('storage/' . $image->image_path) }}" 
+                                             alt="{{ $news->title }}"
+                                             class="img-fluid">
+                                    </figure>
+                                </div>
+                            @endif
                         @endforeach
                     </div>
                     <div class="swiper-pagination"></div>
@@ -44,7 +49,7 @@
             </div>
             @endif
 
-            <footer class="news-article__footer">
+            <footer class="news-article__footer mt-4">
                 <a href="{{ route('news.index') }}" class="btn btn-primary">
                     <i class="fas fa-arrow-left"></i> Nazad na sve vesti
                 </a>
@@ -86,12 +91,14 @@
         margin-bottom: 2rem;
         border-radius: 8px;
         overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
 
     .news-article__main-image img {
         width: 100%;
         height: auto;
         display: block;
+        object-fit: cover;
     }
 
     .news-article__content {
@@ -111,42 +118,40 @@
         color: #333;
     }
 
+    .gallery-slider {
+        padding-bottom: 3rem;
+    }
+
     .gallery-item {
         margin: 0;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
 
     .gallery-item img {
         width: 100%;
-        height: auto;
+        height: 400px;
+        object-fit: cover;
         border-radius: 8px;
     }
 
-    .gallery-item figcaption {
-        text-align: center;
-        padding: 0.5rem;
-        color: #666;
+    .swiper-button-next,
+    .swiper-button-prev {
+        color: #0056b3;
+    }
+
+    .swiper-pagination-bullet {
+        background: #0056b3;
+    }
+
+    .swiper-pagination-bullet-active {
+        background: #003d82;
     }
 
     .news-article__footer {
         text-align: center;
         margin-top: 3rem;
-    }
-
-    .gallery-slider {
-        padding-bottom: 3rem;
-    }
-
-    .gallery-slider .swiper-button-next,
-    .gallery-slider .swiper-button-prev {
-        color: #0056b3;
-    }
-
-    .gallery-slider .swiper-pagination-bullet {
-        background: #0056b3;
-    }
-
-    .gallery-slider .swiper-pagination-bullet-active {
-        background: #003d82;
     }
 </style>
 @endpush
@@ -171,6 +176,10 @@ document.addEventListener('DOMContentLoaded', function() {
             navigation: {
                 nextEl: '.swiper-button-next',
                 prevEl: '.swiper-button-prev',
+            },
+            effect: 'fade',
+            fadeEffect: {
+                crossFade: true
             }
         });
     }

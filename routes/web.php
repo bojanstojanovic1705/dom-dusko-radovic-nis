@@ -8,7 +8,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\LegalController;
-use App\Http\Controllers\Admin\Auth\LoginController;
+use App\Http\Controllers\Admin\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +42,7 @@ Route::get('/dokumenta/javne-nabavke', [DocumentController::class, 'procurement'
 // Vesti rute
 Route::get('/vesti', [NewsController::class, 'index'])->name('news.index');
 Route::get('/vesti/{news}', [NewsController::class, 'show'])->name('news.show');
+Route::get('/vesti/{slug}', [NewsController::class, 'show'])->name('news.show');
 Route::get('/vest/{slug}', [NewsController::class, 'show'])->name('news.show');
 
 // Kontakt ruta
@@ -58,9 +59,14 @@ Route::get('/uslovi-koriscenja', [LegalController::class, 'terms'])->name('legal
 // Admin rute
 Route::prefix('admin')->name('admin.')->group(function () {
     // Auth rute
-    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [LoginController::class, 'login']);
-    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    Route::middleware('guest:admin')->group(function () {
+        Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+        Route::post('/login', [LoginController::class, 'login']);
+    });
+    
+    Route::post('/logout', [LoginController::class, 'logout'])
+        ->name('logout')
+        ->middleware('auth:admin');
 
     // Protected admin rute
     Route::middleware('auth:admin')->group(function () {
@@ -70,5 +76,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Rute za upravljanje dokumentima
         Route::resource('documents', \App\Http\Controllers\Admin\DocumentController::class);
+        
+        // Rute za upravljanje vestima
+        Route::resource('news', \App\Http\Controllers\Admin\NewsController::class);
     });
 });

@@ -3,130 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title') - Admin Panel</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title') - Admin panel</title>
+    
+    <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
-            --sidebar-width: 250px;
+        body {
+            min-height: 100vh;
+            background-color: #f8f9fa;
         }
-        
         .admin-sidebar {
-            width: var(--sidebar-width);
-            height: 100vh;
+            width: 250px;
+            background: #343a40;
+            min-height: 100vh;
             position: fixed;
             left: 0;
             top: 0;
-            background: #2c3e50;
             padding: 1rem;
-            color: white;
         }
-        
+        .admin-sidebar .nav-link {
+            color: rgba(255,255,255,.75);
+            padding: .75rem 1rem;
+            margin-bottom: .25rem;
+            border-radius: .375rem;
+        }
+        .admin-sidebar .nav-link:hover {
+            color: #fff;
+            background: rgba(255,255,255,.1);
+        }
+        .admin-sidebar .nav-link.active {
+            color: #fff;
+            background: rgba(255,255,255,.1);
+        }
+        .admin-sidebar .nav-link i {
+            width: 1.25rem;
+            margin-right: .5rem;
+            text-align: center;
+        }
         .admin-content {
-            margin-left: var(--sidebar-width);
+            margin-left: 250px;
             padding: 2rem;
         }
-        
-        .sidebar-brand {
-            padding: 1rem;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .nav-link {
-            color: rgba(255,255,255,0.8);
-            padding: 0.8rem 1rem;
-            margin: 0.2rem 0;
-            border-radius: 5px;
-            transition: all 0.3s;
-        }
-        
-        .nav-link:hover,
-        .nav-link.active {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-        
-        .nav-link i {
-            width: 20px;
-            text-align: center;
-            margin-right: 10px;
-        }
-        
         .admin-header {
-            background: white;
+            background: #fff;
+            border-bottom: 1px solid #dee2e6;
             padding: 1rem 2rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
-        
-        .logout-btn {
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            padding: 0.8rem 1rem;
-            display: block;
-            margin-top: auto;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .logout-btn:hover {
-            color: white;
+            margin: -2rem -2rem 2rem;
         }
     </style>
-    @stack('styles')
 </head>
 <body>
-    <div class="admin-sidebar d-flex flex-column">
-        <div class="sidebar-brand">
-            <h5 class="mb-0">Dom Duško Radović</h5>
-            <small>Admin Panel</small>
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="d-flex align-items-center mb-4 text-white">
+            <i class="fas fa-user-shield fa-2x me-2"></i>
+            <h5 class="mb-0">Admin Panel</h5>
         </div>
         
-        <nav class="nav flex-column mb-auto">
+        <nav class="nav flex-column">
             <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                 <i class="fas fa-home"></i> Dashboard
             </a>
             <a href="{{ route('admin.documents.index') }}" class="nav-link {{ request()->routeIs('admin.documents.*') ? 'active' : '' }}">
                 <i class="fas fa-file-pdf"></i> Dokumenti
             </a>
-            <a href="#" class="nav-link">
+            <a href="{{ route('admin.news.index') }}" class="nav-link {{ request()->routeIs('admin.news.*') ? 'active' : '' }}">
                 <i class="fas fa-newspaper"></i> Vesti
             </a>
         </nav>
-        
-        <form action="{{ route('admin.logout') }}" method="POST">
-            @csrf
-            <button type="submit" class="logout-btn btn btn-link w-100 text-start">
-                <i class="fas fa-sign-out-alt"></i> Odjavi se
-            </button>
-        </form>
-    </div>
+    </aside>
 
+    <!-- Main Content -->
     <main class="admin-content">
-        <div class="admin-header d-flex justify-content-between align-items-center">
+        <header class="admin-header d-flex justify-content-between align-items-center">
             <h4 class="mb-0">@yield('title')</h4>
-            <div>
-                <span class="text-muted">Dobrodošli,</span>
-                <span class="ms-1">{{ Auth::guard('admin')->user()->name }}</span>
-            </div>
-        </div>
+            <form action="{{ route('admin.logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-outline-danger">
+                    <i class="fas fa-sign-out-alt"></i> Odjava
+                </button>
+            </form>
+        </header>
 
         @if(session('success'))
-            <div class="alert alert-success">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
         @if(session('error'))
-            <div class="alert alert-danger">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
 
         @yield('content')
     </main>
 
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
     @stack('scripts')
 </body>
 </html>

@@ -11,7 +11,11 @@
             @foreach($news as $item)
             <article class="news-card">
                 <div class="news-card__image">
-                    <img src="{{ asset($item->main_image) }}" alt="{{ $item->title }}">
+                    @if($item->images->isNotEmpty())
+                        <img src="{{ asset('storage/' . $item->images->first()->image_path) }}" 
+                             alt="{{ $item->title }}"
+                             class="img-fluid">
+                    @endif
                 </div>
                 <div class="news-card__content">
                     <h2 class="news-card__title">{{ $item->title }}</h2>
